@@ -1,14 +1,34 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import GenreList from './GenreList';
+import BookList from './BookList';
+import topBar from './topBar';
 // import reportWebVitals from './reportWebVitals';
 
+
+
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route
+} from "react-router-dom";
+
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <React.StrictMode>
+        <Router>
+            <Switch>
+                <Route path="/categorii">
+                    <GenreList/>
+
+                </Route>
+                <Route path="/carti">
+                    <BookList/>
+                </Route>
+            </Switch>
+        </Router>
+    </React.StrictMode>,
+    document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function
