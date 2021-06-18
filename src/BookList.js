@@ -1,37 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
 import axios from "axios";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     AppBar, Button,
     GridList,
     GridListTile,
     GridListTileBar,
-    IconButton,
+    IconButton, InputBase,
     ListSubheader,
-    makeStyles, Toolbar, Typography
+    fade, makeStyles, Toolbar, Typography
 } from "@material-ui/core";
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import {groupBy} from "lodash";
-
-const topBar = makeStyles((theme) => ({
-    root: {
-        flexGrow: 1,
-    },
-    menuButton: {
-        marginRight: theme.spacing(2),
-    },
-    title: {
-        flexGrow: 1,
-    },
-}));
+import {
+    useLocation
+} from "react-router-dom";
+import BookModal from "./BookModal";
+import {Search} from "@material-ui/icons";
+import Rating from '@material-ui/lab/Rating';
+import {Alert} from "@material-ui/lab";
 
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'space-around',
-        overflow: 'hidden',
+        flexDirection: "column",
+        gap: 12,
+        alignItems: "center",
         backgroundColor: theme.palette.background.paper,
     },
     gridList: {
@@ -41,8 +34,44 @@ const useStyles = makeStyles((theme) => ({
     icon: {
         color: 'rgba(255, 255, 255, 0.54)',
     },
+    search: {
+        position: 'relative',
+        borderRadius: theme.shape.borderRadius,
+        backgroundColor: fade("#efefefa3", 1),
+        '&:hover': {
+            backgroundColor: fade("#efefefa3", 0.8),
+        },
+        marginRight: theme.spacing(2),
+        marginLeft: 0,
+        width: '100%',
+        [theme.breakpoints.up('sm')]: {
+            marginLeft: theme.spacing(3),
+            width: 'auto',
+        },
+    },
+    searchIcon: {
+        padding: theme.spacing(0, 2),
+        height: '100%',
+        position: 'absolute',
+        pointerEvents: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    inputRoot: {
+        color: 'inherit',
+    },
+    inputInput: {
+        padding: theme.spacing(1, 1, 1, 0),
+        // vertical padding + font size from searchIcon
+        paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+        transition: theme.transitions.create('width'),
+        width: '100%',
+        [theme.breakpoints.up('md')]: {
+            width: '20ch',
+        },
+    },
 }));
-
 
 
 function BookList() {
@@ -59,28 +88,78 @@ function BookList() {
 
     const classes = useStyles();
 
-    const booksByGenre  = groupBy(books, "genre");
+    const booksByGenre = groupBy(books, "genre");
     const genres = Object.keys(booksByGenre)
-    console.log("booksByGenre", booksByGenre)
-    console.log("genres", genres)
-    console.log("photos", books)
-    return (
-        <div className="App">
-            <GridList cellHeight={180} className={classes.gridList}>
-                <GridListTile cols={2} style={{ height: 'auto' }}>
-                    <ListSubheader component="div">Carti</ListSubheader>
-                </GridListTile>
-                {genres.map((genre) => (
-                    <GridListTile key={genre}>
-                        <img src={booksByGenre[genre][0].photo_categories} alt={genre} />
-                        <GridListTileBar
-                            title={genre}
 
+
+    let location = useLocation();
+    let query = new URLSearchParams(location.search);
+    let categorie = query.get("categorie")
+    const [searchValue, setSearchValue] = useState("");
+
+    let filteredBooks = [];
+    filteredBooks = books.filter(book => {
+        if (categorie && book.genre !== categorie) {
+            return false;
+        }
+        if (searchValue && !book.name.toLowerCase().includes(searchValue.toLowerCase())) {
+            return false;
+        }
+
+        return true;
+    });
+
+    const [selectedBook, setSelectedBook] = React.useState(false);
+
+    return (
+        <div className={classes.root}>
+            <Typography variant="h6">Carti</Typography>
+            <div>
+                <div className={classes.search}>
+                    <div className={classes.searchIcon}>
+                        <Search/>
+                    </div>
+                    <InputBase
+                        placeholder="Search…"
+                        value={searchValue}
+                        onChange={(event) => setSearchValue(event.target.value)}
+                        classes={{
+                            root: classes.inputRoot,
+                            input: classes.inputInput,
+                        }}
+                        inputProps={{'aria-label': 'search'}}
+                    />
+                </div>
+            </div>
+            <GridList cellHeight={180} className={classes.gridList}>
+                {filteredBooks.map((book) => (
+                    <GridListTile key={book.name} onClick={() => {
+                        setSelectedBook(book);
+                    }}>
+                        <img src={book.photo_books} alt={book.name}/>
+                        <GridListTileBar
+                            title={book.name}
+                            actionIcon={<Rating value={book.rating} precision={0.1} readOnly/>}
                         />
                     </GridListTile>
                 ))}
             </GridList>
+
+            <BookModal
+                handleClose={() => {
+                    setSelectedBook(null);
+                }}
+                selectedBook={selectedBook}
+            />
         </div>
     );
 }
+
 export default BookList;
+
+// 1. Recenzii (adauga)
+// 2. Rezerva
+// 3. Sign up
+// 4. Sign in
+// 5. Register
+// 6. de adaugat recenzii

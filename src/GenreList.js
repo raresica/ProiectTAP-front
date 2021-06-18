@@ -1,10 +1,9 @@
-import logo from './logo.svg';
-import './App.css';
 import axios from "axios";
 import {useEffect, useState} from "react";
 import {GridList, GridListTile, GridListTileBar, IconButton, ListSubheader, makeStyles} from "@material-ui/core";
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import {groupBy } from "lodash";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -39,9 +38,9 @@ function GenreList() {
 
     const booksByGenre  = groupBy(books, "genre");
     const genres = Object.keys(booksByGenre)
-    console.log("booksByGenre", booksByGenre)
-    console.log("genres", genres)
-    console.log("photos", books)
+
+    let history = useHistory();
+
     return (
         <div className="App">
             <GridList cellHeight={180} className={classes.gridList}>
@@ -49,11 +48,12 @@ function GenreList() {
                     <ListSubheader component="div">Categorii</ListSubheader>
                 </GridListTile>
                 {genres.map((genre) => (
-                    <GridListTile key={genre}>
+                    <GridListTile key={genre} onClick={() => {
+                        history.push(`/carti?categorie=${genre}`);
+                    }}>
                         <img src={booksByGenre[genre][0].photo_categories} alt={genre} />
                         <GridListTileBar
                             title={genre}
-
                         />
                     </GridListTile>
                 ))}

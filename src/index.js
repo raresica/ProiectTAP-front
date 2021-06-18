@@ -3,10 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import GenreList from './GenreList';
 import BookList from './BookList';
-import topBar from './topBar';
-// import reportWebVitals from './reportWebVitals';
-
-
+import NavBar from './NavBar';
 
 import {
     BrowserRouter as Router,
@@ -17,10 +14,10 @@ import {
 ReactDOM.render(
     <React.StrictMode>
         <Router>
+            <NavBar/>
             <Switch>
                 <Route path="/categorii">
                     <GenreList/>
-
                 </Route>
                 <Route path="/carti">
                     <BookList/>
