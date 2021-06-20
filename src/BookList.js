@@ -18,6 +18,7 @@ import BookModal from "./BookModal";
 import {Search} from "@material-ui/icons";
 import Rating from '@material-ui/lab/Rating';
 import {Alert} from "@material-ui/lab";
+import filteredBook from "lodash/collection";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -132,18 +133,20 @@ function BookList() {
                 </div>
             </div>
             <GridList cellHeight={250} className={classes.gridList}>
-                {filteredBooks.map((book) => (
-                    <GridListTile key={book.name} onClick={() => {
-                        setSelectedBook(book);
-                    }}>
-                        <img src={book.photo_books} alt={book.name}/>
-                        <GridListTileBar
-                            title={book.name}
-                            actionIcon={<Rating value={book.rating} precision={0.1} readOnly/>}
+            /* {filteredBooks.map((book) => (
+                 <GridListTile key={book.name} onClick={() => {
+                     setSelectedBook(book);
+                 }}>
+                     <img src={book.photo_books} alt={book.name}/>
+                     <GridListTileBar
+                         title={book.name}
+                         actionIcon={<Rating value={book.rating} precision={0.1} readOnly/>}
+
                         />
                     </GridListTile>
                 ))}
-            </GridList>
+            </GridList>}
+
 
             <BookModal
                 handleClose={() => {
