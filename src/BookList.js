@@ -28,8 +28,8 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.paper,
     },
     gridList: {
-        width: 500,
-        height: 450,
+        width: 1300,
+        height: 1000,
     },
     icon: {
         color: 'rgba(255, 255, 255, 0.54)',
@@ -131,7 +131,7 @@ function BookList() {
                     />
                 </div>
             </div>
-            <GridList cellHeight={180} className={classes.gridList}>
+            <GridList cellHeight={250} className={classes.gridList}>
                 {filteredBooks.map((book) => (
                     <GridListTile key={book.name} onClick={() => {
                         setSelectedBook(book);

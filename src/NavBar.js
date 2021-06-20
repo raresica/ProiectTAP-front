@@ -7,8 +7,8 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu'
 import {Link, useLocation} from 'react-router-dom';
-import {Drawer, InputBase, List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
-import {Book, Category, LocalLibrary, Search} from "@material-ui/icons";
+import {Drawer, InputBase, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem} from "@material-ui/core";
+import {AccountCircle, Book, Category, LocalLibrary, Search} from "@material-ui/icons";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -19,6 +19,11 @@ const useStyles = makeStyles(theme => ({
     navList: {
         minWidth: 220,
     },
+    profile: {
+        position: "absolute",
+        right: 20,
+    }
+
 }));
 
 const NavBar = () => {
@@ -28,6 +33,30 @@ const NavBar = () => {
 
     const closeDrawer = () => {
         setDrawerOpen(false);
+
+    };
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const isMenuOpen = Boolean(anchorEl);
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+    const menuId = 'primary-search-account-menu';
+    const renderMenu  = (
+        <Menu className={classes.profile}
+            anchorEl={anchorEl}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            id={menuId}
+            keepMounted
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            open={isMenuOpen}
+            onClose={handleMenuClose}
+        >
+            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+            <MenuItem onClick={handleMenuClose}>Log Out</MenuItem>
+        </Menu>
+    );
+    const handleProfileMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
     };
 
     return (
@@ -42,6 +71,16 @@ const NavBar = () => {
                     <Typography variant="h6" color="inherit">
                         Biblioteca mea
                     </Typography>
+                    <IconButton
+                        edge="end"
+                        aria-label="account of current user"
+                        aria-controls={menuId}
+                        aria-haspopup="true"
+                        onClick={handleProfileMenuOpen}
+                        color="inherit"
+                    >
+                        <AccountCircle />
+                    </IconButton>
                 </Toolbar>
                 <Drawer
                     open={drawerOpen}
@@ -68,6 +107,7 @@ const NavBar = () => {
                         </ListItem>
                     </List>
                 </Drawer>
+                {renderMenu}
             </AppBar>
         </>
     );
