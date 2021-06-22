@@ -8,27 +8,70 @@ import NavBar from './NavBar';
 import {
     BrowserRouter as Router,
     Switch,
-    Route
+    Route,
+    Redirect
 } from "react-router-dom";
+import SignUpPage from "./SignUpPage";
+import SignInPage from "./SignInPage";
+import ProfilePage from "./ProfilePage";
 
 ReactDOM.render(
-    <React.StrictMode>
-        <Router>
-            <NavBar/>
-            <Switch>
-                <Route path="/categorii">
-                    <GenreList/>
-                </Route>
-                <Route path="/carti">
-                    <BookList/>
-                </Route>
-            </Switch>
-        </Router>
-    </React.StrictMode>,
+    <Router>
+        <NavBar/>
+        <Switch>
+            <Route path="/categorii">
+                <GenreList/>
+            </Route>
+            <Route path="/carti">
+                <BookList/>
+            </Route>
+            <Route path="/sign-up">
+                <SignUpPage/>
+            </Route>
+            <VisitorRoute path="/sign-in">
+                <SignInPage/>
+            </VisitorRoute>
+            <ProtectedRoute path="/profile">
+                <ProfilePage/>
+            </ProtectedRoute>
+        </Switch>
+    </Router>,
     document.getElementById('root')
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// reportWebVitals();
+
+function ProtectedRoute(props) {
+    const isLoggedIn = !!localStorage.getItem("username")
+    const {children, ...rest} = props;
+
+    return (
+        <Route
+            {...rest}
+            render={() =>
+                isLoggedIn ? children : (
+                    <Redirect
+                        to="/sign-in"
+                    />
+                )
+            }
+        />
+    );
+}
+
+function VisitorRoute(props) {
+    const isLoggedIn = !!localStorage.getItem("username")
+    const {children, ...rest} = props;
+
+    return (
+        <Route
+            {...rest}
+            render={() =>
+                !isLoggedIn ? children : (
+                    <Redirect
+                        to="/profile"
+                    />
+                )
+            }
+        />
+    );
+}

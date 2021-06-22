@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu'
-import {Link, useLocation} from 'react-router-dom';
+import {Link, useHistory, useLocation} from 'react-router-dom';
 import {Drawer, InputBase, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem} from "@material-ui/core";
 import {AccountCircle, Book, Category, LocalLibrary, Search} from "@material-ui/icons";
 
@@ -22,6 +22,8 @@ const useStyles = makeStyles(theme => ({
     profile: {
         position: "absolute",
         right: 20,
+        display: "flex",
+        alignItems: "center"
     }
 
 }));
@@ -30,6 +32,9 @@ const NavBar = () => {
     const classes = useStyles();
 
     const [drawerOpen, setDrawerOpen] = useState(false);
+
+    const username = localStorage.getItem("username");
+    const isLoggedIn = !!username;
 
     const closeDrawer = () => {
         setDrawerOpen(false);
@@ -40,24 +45,43 @@ const NavBar = () => {
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
+    let history = useHistory();
+
+    const handleLogout = () => {
+        localStorage.removeItem("username")
+        history.push(`/sign-in`);
+    }
+
     const menuId = 'primary-search-account-menu';
-    const renderMenu  = (
+    const renderMenu = (
         <Menu className={classes.profile}
-            anchorEl={anchorEl}
-            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-            id={menuId}
-            keepMounted
-            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
+              anchorEl={anchorEl}
+              anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+              id={menuId}
+              keepMounted
+              transformOrigin={{vertical: 'top', horizontal: 'right'}}
+              open={isMenuOpen}
+              onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Log Out</MenuItem>
+            {
+                isLoggedIn ? (
+                    [
+                        <MenuItem key="1" onClick={handleMenuClose} component={Link} to="/profile">Profilul meu</MenuItem>,
+                        <MenuItem key="2" onClick={handleMenuClose} onClick={handleLogout}>Log Out</MenuItem>
+                    ]
+                ) : (
+                    [
+                        <MenuItem key="3" onClick={handleMenuClose} component={Link} to="/sign-in">Log in</MenuItem>,
+                        <MenuItem key="4" onClick={handleMenuClose} component={Link} to="/sign-up">Inregistreaza-te</MenuItem>
+                    ]
+                )
+            }
         </Menu>
     );
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
 
     return (
         <>
@@ -71,16 +95,22 @@ const NavBar = () => {
                     <Typography variant="h6" color="inherit">
                         Biblioteca mea
                     </Typography>
-                    <IconButton
-                        edge="end"
-                        aria-label="account of current user"
-                        aria-controls={menuId}
-                        aria-haspopup="true"
-                        onClick={handleProfileMenuOpen}
-                        color="inherit"
-                    >
-                        <AccountCircle />
-                    </IconButton>
+                    <div className={classes.profile}>
+                        {
+                            isLoggedIn &&
+                            <Typography>Buna, {username}</Typography>
+                        }
+                        <IconButton
+                            edge="end"
+                            aria-label="account of current user"
+                            aria-controls={menuId}
+                            aria-haspopup="true"
+                            onClick={handleProfileMenuOpen}
+                            color="inherit"
+                        >
+                            <AccountCircle/>
+                        </IconButton>
+                    </div>
                 </Toolbar>
                 <Drawer
                     open={drawerOpen}

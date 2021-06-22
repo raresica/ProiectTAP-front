@@ -26,11 +26,10 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: "column",
         gap: 12,
         alignItems: "center",
-        backgroundColor: theme.palette.background.paper,
     },
     gridList: {
-        width: 1300,
-        height: 1000,
+        width: 1200,
+        height: "calc(100vh - 180px)",
     },
     icon: {
         color: 'rgba(255, 255, 255, 0.54)',
@@ -132,8 +131,11 @@ function BookList() {
                     />
                 </div>
             </div>
-            <GridList cellHeight={250} className={classes.gridList}>
-            /* {filteredBooks.map((book) => (
+            {
+                filteredBooks.length === 0 && <Typography>Nu s-au gasit carti</Typography>
+            }
+            <GridList cellHeight={350} className={classes.gridList} cols={5} spacing={12}>
+             {filteredBooks.map((book) => (
                  <GridListTile key={book.name} onClick={() => {
                      setSelectedBook(book);
                  }}>
@@ -145,9 +147,7 @@ function BookList() {
                         />
                     </GridListTile>
                 ))}
-            </GridList>}
-
-
+            </GridList>
             <BookModal
                 handleClose={() => {
                     setSelectedBook(null);
