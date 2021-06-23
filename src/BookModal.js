@@ -104,22 +104,26 @@ export default function BookModal(props) {
     }, [])
 
     const bookReviews = reviews.filter(review => review.bookDto.id === (selectedBook ? selectedBook.id : 0))
-    const profile = localStorage.getItem("profile");
+    const profile = JSON.parse(localStorage.getItem("profile"));
     const name = profile.firstName || "Anonim";
 
     const [reviewText, setReviewText] = useState("")
-    const [rating, setRating] = useState()
+    const [rating, setRating] = useState(0)
 
     const handleSubmitReview = () => {
-        axios.post("http://localhost:8080/api/v1/review", {
+        const review = {
             reviewText,
-            rating,
-            bookId: selectedBook.id
-        })
+            bookRating: rating,
+            bookDto: selectedBook,
+            userDto: profile
+        };
+
+        axios.post("http://localhost:8080/api/v1/review", review)
             .then(function (response) {
                 console.log(response.data);
                 setRating(null)
                 setReviewText("")
+                setReviews([...reviews, review])
             })
             .catch(console.log)
     }
@@ -180,7 +184,7 @@ export default function BookModal(props) {
                                                 <Typography variant="subtitle2">{name}</Typography>
                                             </div>
                                             <div>
-                                                <Rating value={rating} precision={0.1} onChange={(event, value) => {
+                                                <Rating name="rating" value={rating} precision={0.1} onChange={(event, value) => {
                                                     setRating(value);
                                                 }}/>
                                                 <TextField
@@ -216,13 +220,13 @@ export default function BookModal(props) {
                                         const reviewerName = review.userDto.firstName || "Anonim";
 
                                         return (
-                                            <div className={classes.reviewContainer}>
+                                            <div key={review.reviewText} className={classes.reviewContainer}>
                                                 <div className={classes.reviewProfile}>
                                                     <Avatar>{reviewerName[0]}</Avatar>
                                                     <Typography variant="subtitle2">{reviewerName}</Typography>
                                                 </div>
                                                 <div className={classes.reviewTextAndRating}>
-                                                    <Rating value={selectedBook.rating} precision={0.1} readOnly/>
+                                                    <Rating value={review.bookRating} precision={0.1} readOnly/>
                                                     <Typography variant="body1">{review.reviewText}</Typography>
                                                 </div>
                                             </div>

@@ -46,7 +46,6 @@ const SignInPage = () => {
                             showError("Parola e gresita")
                         } else {
                             localStorage.setItem("username", response.data.username)
-                            localStorage.setItem("profile", JSON.stringify(response.data))
                             history.push(`/profile`);
                         }
                     })

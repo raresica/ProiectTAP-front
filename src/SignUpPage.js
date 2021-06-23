@@ -63,7 +63,7 @@ const SignUpPage = () => {
                         history.push(`/profile`);
                     })
                     .catch(() => {
-                        showError("Utilizatorul nu a fost gasit")
+                        showError("Utilizatorul este deja luat")
                     })
             }, [username, password, history]
         )

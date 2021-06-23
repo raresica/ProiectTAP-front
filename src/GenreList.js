@@ -13,10 +13,17 @@ const useStyles = makeStyles((theme) => ({
         overflow: 'hidden',
         backgroundColor: theme.palette.background.paper,
     },
-    gridList: {
-        width: 500,
-        height: 450,
+    gridList:{
+        marginTop: "18% !important",
+        alignContent: "center ",
+        // margin: "0 auto !important",
+        flexWrap: 'nowrap',
+        // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+        // transform: 'translateZ(0)',
+
     },
+
+
     icon: {
         color: 'rgba(255, 255, 255, 0.54)',
     },
@@ -42,24 +49,42 @@ function GenreList() {
     let history = useHistory();
 
     return (
-        <div className="App">
-            <GridList cellHeight={180} className={classes.gridList}>
-                <GridListTile cols={2} style={{ height: 'auto' }}>
-                    <ListSubheader component="div">Categorii</ListSubheader>
-                </GridListTile>
-                {genres.map((genre) => (
-                    <GridListTile key={genre} onClick={() => {
-                        history.push(`/carti?categorie=${genre}`);
-                    }}>
-                        <img src={booksByGenre[genre][0].photo_categories} alt={genre} />
-                        <GridListTileBar
-                            title={genre}
-                        />
-                    </GridListTile>
-                ))}
-            </GridList>
-        </div>
-    );
-}
 
+        <div className="App">
+            {/*<GridList cellHeight={180} className={classes.gridList}>*/}
+            {/*    <GridListTile cols={2} style={{ height: 'auto' }}>*/}
+            {/*        <ListSubheader component="div">Categorii</ListSubheader>*/}
+            {/*    </GridListTile>*/}
+            {/*    {genres.map((genre) => (*/}
+            {/*        <GridListTile key={genre} onClick={() => {*/}
+            {/*            history.push(`/carti?categorie=${genre}`);*/}
+            {/*        }}>*/}
+            {/*            <img src={booksByGenre[genre][0].photo_categories} alt={genre} />*/}
+            {/*            <GridListTileBar*/}
+            {/*                title={genre}*/}
+            {/*            />*/}
+            {/*        </GridListTile>*/}
+            {/*    ))}*/}
+            {/*</GridList>*/}
+
+
+                <GridList className={classes.gridList} cols={5}>
+                    {genres.map((genre) => (
+                        <GridListTile onClick={() => history.push(`/carti?categorie=${genre}`)} key={genre}>
+                            <img src={booksByGenre[genre][0].photo_categories} alt={`${genre}Alt`} />
+                            <GridListTileBar
+                                title={genre}
+                            />
+                        </GridListTile>
+                    ))}
+                </GridList>
+            </div>
+
+
+
+
+
+    );
+
+}
 export default GenreList;
